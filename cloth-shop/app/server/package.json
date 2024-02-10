@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "pet project by @AkirQZ",
   "main": "src/index.js",
+  "type": "commonjs",
   "scripts": {
     "dev": "nodemon src/index.js"
   },
