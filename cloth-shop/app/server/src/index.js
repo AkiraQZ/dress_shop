@@ -1,9 +1,19 @@
 require('dotenv').config()
 const express = require('express');
 const sequelize = require("./db.js");
-const models = require('./models/models.js')
+const models = require('./models/models.js');
+const cors = require('cors');
+const router = require('./routes/index.js');
+const errorHandler = require('./middleware/error_hand_midleware.js')
 
 const app = express();
+app.use(cors());
+app.use(express.json());
+app.use('/api', router);
+
+
+app.use(errorHandler);
+
 const PORT = process.env.PORT || 5000;
 
 async function start() {
@@ -23,6 +33,5 @@ async function start() {
 }
 
 // gentlemens, start your engines!!!
-// try/catch just to make sure the server starts without errors
 
 start();
