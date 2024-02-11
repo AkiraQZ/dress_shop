@@ -1,4 +1,4 @@
-const { cloth } = require("../models/models.js");
+const { cloth, clothInfo } = require("../models/models.js");
 const uuid = require ('uuid');
 const path = require('path');
 const apiError = require("../error/api_error");
@@ -7,12 +7,23 @@ const fs = require("fs/promises")
 class clothController {
   async create(req, res, next) {
     try {
-      const {name, price, typeId} = req.body;
+      const {name, price, typeId, info} = req.body;
       const {img} = req.files;
       let fileName = uuid.v4() + ".jpg";
       img.mv(path.resolve(__dirname, '..', 'static', fileName))
 
       const clothItem = await cloth.create({name, price, typeId, img: fileName});
+
+      if(info) {
+        info = JSON.parse(info)
+        info.forEach(element => {
+          clothInfo.create({
+            title: element.title,
+            description: element.description,
+            clothId: cloth.id,
+          })
+        });
+      }
 
       return res.json(clothItem);
     } catch (err) {
@@ -21,20 +32,27 @@ class clothController {
   };
 
   async getAll(req, res) {
-    const {typeId, name} = req.query;
+    let {typeId, name, limit, page} = req.query;
+    page = page || 1;
+    limit = limit || 9;
+    let offset = page * limit - limit;
     let clothItem;
     if (!typeId && !name) {
-      clothItem = await cloth.findAll();
+      clothItem = await cloth.findAndCountAll({limit, offset});
     } else if (typeId && !name) {
-      clothItem = await cloth.findAll({
+      clothItem = await cloth.findAndCountAll({
         where:{
-          "typeId" : typeId
+          "typeId" : typeId,
+          limit,
+          offset
         }
       });
     } else if (!typeId && name) {
       clothItem = await cloth.findOne({
         where:{
-          "name" : name
+          "name" : name,
+          limit,
+          offset
         }
       });
     } else if (typeId && name) {
@@ -42,6 +60,8 @@ class clothController {
         where:{
           "name": name,
           "typeId": typeId,
+          limit,
+          offset
         }
       });
     }
