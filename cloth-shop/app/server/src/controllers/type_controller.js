@@ -8,10 +8,32 @@ class typeController {
         return res.json(typeItem);
     };
 
-    async getAll(req, res) {
-      const typesItems = await type.findAll();
-      return res.json(typesItems)
+    async getAll(req, res, next) {
+      try {
+        const success = await type.findAll();
+        res.json(success);
+      } catch (err) {
+        next(err);
+      }
     };
+
+    // async getOne (req, res, next) {
+    //   try {
+    //     const { id } = req.body;
+    //     const success = await type.findOne({
+    //       where: {
+    //         "id" : id
+    //       },
+    //     });
+    //     if (success) {
+    //       res.json(success);
+    //     } else {
+    //       res.status(404).json({ error: "Item not found" });
+    //     }
+    //   } catch (err) {
+    //     next(err);
+    //   }
+    // }
 
     async delete(req, res, next) {
       try {
@@ -30,7 +52,7 @@ class typeController {
       } catch (err) {
           next(err);
       }
-  }
+    }
 };
 
 module.exports = new typeController();

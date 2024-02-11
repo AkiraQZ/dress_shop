@@ -1,7 +1,23 @@
-class typeController {
-    async create(req, res) {
+const { cloth } = require("../models/models.js");
+const uuid = require ('uuid');
+const path = require('path');
+const apiError = require("../error/api_error");
 
-    };
+class clothController {
+  async create(req, res, next) {
+    try {
+      const {name, price, typeId} = req.body;
+      const {img} = req.files;
+      let fileName = uuid.v4() + ".jpg";
+      img.mv(path.resolve(__dirname, '..', 'static', fileName))
+
+      const clothItem = await cloth.create({name, price, typeId, img: fileName});
+
+      return res.json(clothItem);
+    } catch (err) {
+      next(apiError.badRequest(err.message));
+    }
+  };
 
     async getAll(req, res) {
 
@@ -11,21 +27,28 @@ class typeController {
 
     }
 
-    async  delete(req, res, next) {
-        try {
-          const id = parseInt(req.params.id, 10);
+    async update (req, res) {
 
-          const success = await user.delete(id);
+    }
 
-          if (success) {
-            res.status(204).end();
-          } else {
-            res.status(404).end();
+    async delete(req, res, next) {
+      try {
+          const {id} = req.body;
+          const success = await cloth.destroy({
+            where: {
+              "id": id
+            },
           }
-        } catch (err) {
+          );
+          if (success) {
+              res.status(204).end();
+          } else {
+              res.status(404).end();
+          }
+      } catch (err) {
           next(err);
-        }
       }
+    }
 };
 
-module.exports = new typeController();
+module.exports = new clothController();

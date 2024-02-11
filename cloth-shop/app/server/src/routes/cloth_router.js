@@ -1,10 +1,12 @@
 const Router = require ('express');
 const router = new Router();
-const clothController = require('../controllers/cloth_controller.js')
+const cloth_controller = require('../controllers/cloth_controller.js');
 
-router.post('/', );
+router.post('/', cloth_controller.create);
 router.get('/', );
-router.get('/:id',)
-router.delete('/', );
+// router.get('/:id', typeController.getOne);
+router.delete('/',);
+
+
 
 module.exports = router;
