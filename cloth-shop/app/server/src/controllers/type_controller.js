@@ -8,32 +8,34 @@ class typeController {
         return res.json(typeItem);
     };
 
-    async getAll(req, res, next) {
-      try {
-        const success = await type.findAll();
-        res.json(success);
-      } catch (err) {
-        next(err);
+    async getAll(req, res) {
+      const {id, name} = req.query;
+      let typeItem;
+      if (!id && !name) {
+        typeItem = await type.findAll();
+      } else if (id && !name) {
+        typeItem = await type.findAll({
+          where:{
+            "id" : id
+          }
+        });
+      } else if (!id && name) {
+        typeItem = await type.findOne({
+          where:{
+            "name" : name
+          }
+        });
+      } else if (id && name) {
+        typeItem = await type.findOne({
+          where:{
+            "name": name,
+            "id": id,
+          }
+        });
       }
+      return res.json(typeItem);
     };
 
-    // async getOne (req, res, next) {
-    //   try {
-    //     const { id } = req.body;
-    //     const success = await type.findOne({
-    //       where: {
-    //         "id" : id
-    //       },
-    //     });
-    //     if (success) {
-    //       res.json(success);
-    //     } else {
-    //       res.status(404).json({ error: "Item not found" });
-    //     }
-    //   } catch (err) {
-    //     next(err);
-    //   }
-    // }
 
     async delete(req, res, next) {
       try {

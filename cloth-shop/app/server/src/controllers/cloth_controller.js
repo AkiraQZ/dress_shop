@@ -19,13 +19,33 @@ class clothController {
     }
   };
 
-    async getAll(req, res) {
-
-    };
-
-    async getOne (req, res) {
-
+  async getAll(req, res) {
+    const {typeId, name} = req.query;
+    let clothItem;
+    if (!typeId && !name) {
+      clothItem = await cloth.findAll();
+    } else if (typeId && !name) {
+      clothItem = await cloth.findAll({
+        where:{
+          "typeId" : typeId
+        }
+      });
+    } else if (!typeId && name) {
+      clothItem = await cloth.findOne({
+        where:{
+          "name" : name
+        }
+      });
+    } else if (typeId && name) {
+      clothItem = await cloth.findOne({
+        where:{
+          "name": name,
+          "typeId": typeId,
+        }
+      });
     }
+    return res.json(clothItem);
+  };
 
     async update (req, res) {
 
