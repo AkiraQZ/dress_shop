@@ -1,4 +1,4 @@
-const { cloth, clothInfo } = require("../models/models.js");
+const { cloth, cloth_info } = require("../models/models.js");
 const uuid = require ('uuid');
 const path = require('path');
 const apiError = require("../error/api_error");
@@ -17,7 +17,7 @@ class clothController {
       if(info) {
         info = JSON.parse(info)
         info.forEach(element => {
-          clothInfo.create({
+          cloth_info.create({
             title: element.title,
             description: element.description,
             clothId: cloth.id,
@@ -45,7 +45,7 @@ class clothController {
           "typeId" : typeId,
           limit,
           offset
-        }
+        },
       });
     } else if (!typeId && name) {
       clothItem = await cloth.findOne({
@@ -53,7 +53,7 @@ class clothController {
           "name" : name,
           limit,
           offset
-        }
+        },
       });
     } else if (typeId && name) {
       clothItem = await cloth.findOne({
@@ -62,11 +62,22 @@ class clothController {
           "typeId": typeId,
           limit,
           offset
-        }
+        },
       });
     }
     return res.json(clothItem);
   };
+
+  async getOne(req, res) {
+    const {id} = req.params
+    const clothItem = await cloth.findOne(
+        {
+            where: {id},
+            include: [{model: cloth_info, as: 'info'}]
+        },
+    )
+    return res.json(clothItem)
+}
 // get id for select
   async update(req, res, next) {
     try {

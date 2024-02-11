@@ -28,7 +28,7 @@ const type = sequelize.define('type', {
     name: {type: DataTypes.STRING, unique: true, allowNull: false},
 });
 
-const clothInfo = sequelize.define('cloth_info', {
+const cloth_info = sequelize.define('cloth_info', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     title: {type: DataTypes.STRING, allowNull: false},
     description: {type: DataTypes.STRING, allowNull: false},
@@ -46,8 +46,8 @@ cloth.belongsTo(type);
 cloth.hasMany(basketCloth);
 basketCloth.belongsTo(cloth);
 
-cloth.hasMany(clothInfo);
-clothInfo.belongsTo(cloth);
+cloth.hasMany(cloth_info, {as: 'info'});
+cloth_info.belongsTo(cloth);
 
 module.exports = {
     user,
@@ -55,5 +55,5 @@ module.exports = {
     basketCloth,
     cloth,
     type,
-    clothInfo,
+    cloth_info,
 };
