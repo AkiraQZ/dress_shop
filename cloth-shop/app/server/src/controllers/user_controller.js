@@ -38,8 +38,8 @@ class userController {
     }
 
     async check(req, res, next) {
-      const token = genJwt(req.user.id, req.user.email, req.user.role)
-      return res.json({token})
+      const token = genJwt(req.user.id, req.user.email, req.user.role);
+      return res.json({token});
   }
 
     async  delete(req, res, next) {
